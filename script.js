@@ -233,3 +233,57 @@ carTrack.addEventListener('touchend', e => {
   const diff = swipeX - e.changedTouches[0].clientX;
   if (Math.abs(diff) > 40) goTo(currentSlide + (diff > 0 ? 1 : -1));
 }, { passive: true });
+
+// ─── CERTIFICATE FILTER CONTROLS ─────────────────────────────────────────────
+const certFilterBtns = document.querySelectorAll('.cert-filter-btn');
+const certCategories = document.querySelectorAll('.cert-category');
+
+if (certFilterBtns.length && certCategories.length) {
+  certFilterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      certFilterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+
+      certCategories.forEach(category => {
+        let visibleCount = 0;
+        const cards = category.querySelectorAll('.cert-card');
+        const catName = category.dataset.category;
+
+        cards.forEach(card => {
+          const cardCat = card.dataset.category;
+          const cardStatus = card.dataset.status;
+
+          let show = false;
+          if (filter === 'all') {
+            show = true;
+          } else if (filter === 'software') {
+            show = (cardCat === 'software');
+          } else if (filter === 'hardware') {
+            show = (cardCat === 'hardware');
+          } else if (filter === 'earned') {
+            show = (cardStatus === 'earned');
+          } else if (filter === 'pending') {
+            show = (cardStatus === 'pending');
+          }
+
+          if (show) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (filter === 'software') {
+          category.style.display = (catName === 'software') ? 'block' : 'none';
+        } else if (filter === 'hardware') {
+          category.style.display = (catName === 'hardware') ? 'block' : 'none';
+        } else {
+          category.style.display = (visibleCount > 0) ? 'block' : 'none';
+        }
+      });
+    });
+  });
+}
+
