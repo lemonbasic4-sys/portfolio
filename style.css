@@ -775,12 +775,36 @@ summary {
   gap: 18px;
 }
 
-.contact-card a,
-.contact-card span {
+.contact-card a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   color: var(--text);
   text-decoration: none;
   border-bottom: 1px solid var(--line);
   padding-bottom: 12px;
+}
+
+.contact-card a:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.contact-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transition: .2s;
+}
+
+.contact-icon-fill {
+  fill: currentColor;
+  stroke: none;
 }
 
 .contact-card a:hover {
