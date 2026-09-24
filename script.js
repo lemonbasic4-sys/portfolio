@@ -35,6 +35,50 @@ menu.addEventListener("click", () => nav.classList.toggle("open"));
 nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
 document.getElementById("year").textContent = new Date().getFullYear();
 
+document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(link => {
+  link.addEventListener("click", event => {
+    const target = document.querySelector(link.getAttribute("href"));
+    if (!target) return;
+    event.preventDefault();
+    const heading = target.matches(".panel-section")
+      ? target.querySelector(".section-head")
+      : target;
+    const headerOffset = document.querySelector(".topbar").offsetHeight + 56;
+    const destination = heading.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top: destination, behavior: "smooth" });
+    history.pushState(null, "", link.getAttribute("href"));
+  });
+});
+
+let parallaxFrame = 0;
+function updateScrollEffects() {
+  parallaxFrame = 0;
+  document.documentElement.style.setProperty("--scroll-offset", `${window.scrollY}px`);
+}
+
+addEventListener("scroll", () => {
+  if (!parallaxFrame) parallaxFrame = requestAnimationFrame(updateScrollEffects);
+}, { passive: true });
+updateScrollEffects();
+
+const revealSections = document.querySelectorAll(".panel-section");
+revealSections.forEach(section => section.classList.remove("is-visible"));
+
+if ("IntersectionObserver" in window) {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      entry.target.classList.toggle("is-visible", entry.isIntersecting);
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: "-4% 0px -4% 0px"
+  });
+
+  revealSections.forEach(section => revealObserver.observe(section));
+} else {
+  revealSections.forEach(section => section.classList.add("is-visible"));
+}
+
 // ─── PROJECT DETAILS MODAL ───────────────────────────────────────────────────
 
 const projectData = {
